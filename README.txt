@@ -18,6 +18,8 @@ Instalar los paquetes requeridos por el programa:
 - MySQLdb
 - Scrapy 0.14.4 o superior
 
+- ejecutar las sentencias sql del fichero: create_tables
+
 **************************************
 **************************************
 **************************************
