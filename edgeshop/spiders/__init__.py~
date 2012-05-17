@@ -1,0 +1,64 @@
+# This package will contain the spiders of your Scrapy project
+#
+# Please refer to the documentation for information on how to create and manage
+# your spiders.
+
+from scrapy.contrib.spiders import CrawlSpider, Rule
+from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
+from scrapy.selector import HtmlXPathSelector
+from scrapy.item import Item
+from edgeshop.items import *
+import string
+
+colections = { '':'',
+    }
+
+class edgeshopspider(CrawlSpider):
+    name = 'edgeshopspider'
+    allowed_domains = ['edgeent.com']
+    start_urls = ['http://www.edgeent.com/v2/edge_catalogo.asp']
+
+    rules = (
+        Rule(SgmlLinkExtractor(allow=('edge_catalogo\.asp', )), callback='parse_catalogo',follow=True),        
+        #regla que extra las distintas colecciones de el catalogo.
+        Rule(SgmlLinkExtractor(allow=('edge_colecciones\.asp', )), callback='parse_item'),
+    )
+    def parse_catalogo(self, response):
+        hxs = HtmlXPathSelector(response)
+        #obtenemos de cada catalogo los productos
+        for h in hxs.select('//div[contains(@class,"c_marco_catalogo")]'):
+            nombre = h.select('a/@title').extract()
+            ident = h.select('a/@href').extract()
+            imagen = h.select('a/img/@src').extract()
+            if isinstance(nombre,list):
+                nombre=nombre[0]
+            nombre = string.replace(nombre,'\'','')
+            if isinstance(imagen,list):
+                imagen=imagen[0]
+            imagen="http://www.edgeent.com/v2/"+imagen
+            if isinstance(ident,list):
+                ident=ident[0]
+            ident = ident[string.find(ident,'=')+1:]
+            yield EdgeshopCategoria(nombre=nombre,imagen=imagen,ident=ident)  
+            
+    def parse_item(self, response):
+        hxs = HtmlXPathSelector(response)
+        #obtenemos de cada catalogo los productos
+        coleccion = response.url[(string.find(response.url,'=')+1):]
+        for h in hxs.select('//div[contains(@class,"c_contenedor_marco_catalogo")]'):
+            nombre = h.select('div[contains(@class,"c_textos_marco")]/a/text()').extract()
+            imagen = h.select('div[contains(@class,"c_marco_catalogo")]/div/@style').extract()
+            url = h.select('div[contains(@class,"c_textos_marco")]/a/@href').extract()
+            #tratamos el stylo en elq se encuentra la informacion de la imagen, y construimos una url valida
+            if isinstance(nombre,list):
+                nombre=nombre[0]
+            if isinstance(url,list):
+                url=url[0]
+            url="http://www.edgeent.com/v2/"+url
+            nombre = string.replace(nombre,'\'','')
+            if isinstance(imagen,list):
+                imagen=imagen[0]
+            lower = string.find(imagen,'(')
+            upper = string.find(imagen,')')
+            imagen="http://www.edgeent.com/v2/"+imagen[(lower+1):upper]
+            yield EdgeshopItem(nombre=nombre,imagen=imagen,coleccion=coleccion)     

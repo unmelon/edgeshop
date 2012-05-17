@@ -1,0 +1,5 @@
+CREATE DATABASE edgedb;
+GRANT ALL ON edgedb.* to 'melon'@'localhost' IDENTIFIED BY 'scraper';
+use edgedb;
+CREATE TABLE item (id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, nombre VARCHAR(100),imagen VARCHAR(100),url VARCHAR(100),coleccion INT);
+CREATE TABLE coleccion (id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, nombre VARCHAR(100),imagen VARCHAR(100));

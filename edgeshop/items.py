@@ -1,0 +1,24 @@
+# Define here the models for your scraped items
+#
+# See documentation in:
+# http://doc.scrapy.org/topics/items.html
+
+from scrapy.item import Item, Field
+
+class EdgeshopCategoria(Item):
+    # define the fields for your item here like:
+    type = 'categoria'
+    nombre=Field()
+    imagen=Field()
+    ident=Field()
+    pass
+
+class EdgeshopItem(Item):
+    type = 'item'
+    # define the fields for your item here like:
+    nombre = Field()
+    imagen = Field()
+    url = Field()
+    coleccion = Field()
+    pass
+
