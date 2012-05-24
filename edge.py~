@@ -121,7 +121,7 @@ class GUI:
                     event.connect("button-press-event", self.on_item_clicked)
                     lpanel.pack_start(event, True, True, 2)
                     if (counter % 6) == 5:
-                        self.panel2.pack_start(lpanel, True, True, 2)
+                    self.panel2.pack_start(lpanel, True, True, 2)
                 counter += 1
 
             window2.add(self.panel2)
