@@ -110,6 +110,7 @@ class GUI:
                         self.panel2.pack_start(lpanel,True,True,2)
                         break
                 else:
+                    lpanel = Gtk.HBox(True,1)
                     img = Gtk.Image()                
                     if string.find(os.getcwd(),'categimgs') != -1:
                         os.chdir('../..')
